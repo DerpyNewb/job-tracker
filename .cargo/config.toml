@@ -1,0 +1,6 @@
+# Build output stays off the Drive-synced folder (G:\Work Stuff syncs to Google Drive).
+[build]
+target-dir = "C:/rust-target/job-tracker"
+
+[target.x86_64-pc-windows-msvc]
+rustflags = ["-C", "target-feature=+crt-static"]

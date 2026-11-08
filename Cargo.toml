@@ -1,0 +1,25 @@
+[package]
+name = "job-tracker"
+version = "0.1.0"
+edition = "2024"
+description = "Desktop app for logging job applications in an Excel workbook"
+license = "MIT"
+publish = false
+default-run = "job-tracker"
+
+[dependencies]
+calamine = { version = "0.38", features = ["dates"] }
+chrono = "0.4.45"
+eframe = { version = "0.37", features = ["persistence"] }
+egui_extras = { version = "0.37", features = ["datepicker", "serde"] }
+rfd = "0.17"
+rust_xlsxwriter = "0.102"
+serde = { version = "1", features = ["derive"] }
+sha2 = "0.10"
+jiff = "0.2.39"
+egui = "0.37"
+ron = "0.12"
+
+[dev-dependencies]
+egui_kittest = { version = "0.37", features = ["wgpu", "snapshot"] }
+zip = "2"
