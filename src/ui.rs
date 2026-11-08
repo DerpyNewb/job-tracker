@@ -11,7 +11,7 @@ use egui::{
 use egui_extras::{Column, DatePickerButton, TableBuilder};
 
 use crate::model::{Application, Attention, DateCell, Field, Status};
-use crate::prefs::{Prefs, ThemeChoice};
+use crate::prefs::{Accent, Prefs, ThemeChoice};
 use crate::sheet::{SOURCES, Sheet};
 use crate::store::{self, Change, Loaded, Row, SaveError, SaveOptions};
 use crate::theme::{self, Palette, strong};
@@ -88,7 +88,7 @@ pub struct TrackerApp {
     pub sort: (SortKey, bool),
     pub prefs: Prefs,
     /// Theme and text size last applied to the context, so they're only set when they change.
-    applied: Option<(ThemeChoice, f32)>,
+    applied: Option<(ThemeChoice, Accent, f32)>,
     /// Window title last sent, so it's only set when it changes.
     title: String,
     pending: Option<Pending>,
@@ -268,9 +268,10 @@ impl TrackerApp {
 
     /// Applies the theme and text size settings when they change.
     pub fn apply_prefs(&mut self, ctx: &egui::Context) {
-        let want = (self.prefs.theme, self.prefs.text_scale);
+        let want = (self.prefs.theme, self.prefs.accent, self.prefs.text_scale);
         if self.applied != Some(want) {
             ctx.set_theme(self.prefs.theme.preference());
+            theme::set_accent(ctx, self.prefs.accent);
             ctx.set_zoom_factor(self.prefs.text_scale);
             self.applied = Some(want);
         }
@@ -491,7 +492,7 @@ impl TrackerApp {
         self.update_title(&ctx);
         self.handle_keys(&ctx);
         self.handle_close(&ctx);
-        let p = theme::palette(&ctx);
+        let p = theme::palette(ctx.theme(), self.prefs.accent);
         let today = self.today();
 
         Panel::top("top")
@@ -1303,6 +1304,14 @@ impl TrackerApp {
                 for t in [ThemeChoice::System, ThemeChoice::Light, ThemeChoice::Dark] {
                     ui.radio_value(&mut prefs.theme, t, t.label())
                         .labelled_by(l.id);
+                }
+            });
+            ui.label(RichText::new("Accent colour").color(p.muted));
+            ui.horizontal_wrapped(|ui| {
+                for a in Accent::ALL {
+                    // Each name is drawn in its own colour, so the choice previews itself.
+                    let shown = theme::palette(ui.ctx().theme(), a).pine;
+                    ui.radio_value(&mut prefs.accent, a, RichText::new(a.label()).color(shown));
                 }
             });
             let l = ui.label(RichText::new("Text size").color(p.muted));

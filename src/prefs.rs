@@ -7,6 +7,7 @@ use serde::{Deserialize, Serialize};
 
 use crate::model::DEFAULT_STALE_DAYS;
 use crate::store::KEEP_BACKUPS;
+pub use crate::theme::Accent;
 
 /// eframe's app id: names the settings folder, `%APPDATA%\Job tracker\data`.
 pub const APP_ID: &str = "Job tracker";
@@ -50,6 +51,7 @@ pub struct Prefs {
     /// Open the most recent workbook when the app starts.
     pub reopen_last: bool,
     pub theme: ThemeChoice,
+    pub accent: Accent,
     /// 1.0 is normal size.
     pub text_scale: f32,
     /// Days at Applied or Screening, with no follow-up date, before a row needs attention.
@@ -67,6 +69,7 @@ impl Default for Prefs {
             recent: Vec::new(),
             reopen_last: true,
             theme: ThemeChoice::System,
+            accent: Accent::Pine,
             text_scale: 1.0,
             stale_days: DEFAULT_STALE_DAYS,
             follow_up_after_days: 0,

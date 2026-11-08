@@ -135,6 +135,11 @@ fn screens() {
     h.set_size(egui::vec2(1280.0, 1100.0));
     h.run();
     results.add(h.try_snapshot("settings_full"));
+    // Another accent restyles the whole window as soon as it's picked.
+    h.get_by_label("Plum").click();
+    h.run();
+    assert_eq!(h.state().prefs.accent, job_tracker::prefs::Accent::Plum);
+    results.add(h.try_snapshot("settings_plum"));
     h.get_by_label("Done").click();
     h.run();
 }
